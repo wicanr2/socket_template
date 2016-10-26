@@ -1,9 +1,10 @@
 
 all:
-	gcc client6.c -o ipv6_client 
-	gcc server6thread.c -o ipv6_server -lpthread -Wno-pointer-to-int-cast -Wno-int-to-pointer-cast
+	make -C ipv6
+	make -C ipv4
 	make -C udp_multicast
 
 clean:
-	rm ipv6_client ipv6_server
+	make clean -C ipv6 
+	make clean -C ipv4
 	make clean -C udp_multicast

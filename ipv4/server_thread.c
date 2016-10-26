@@ -10,7 +10,7 @@
 void *connection_handler(void *);
 
 /* check readable inline function */
-__inline int readable_timeout( int fd, int sec,int usec) {
+int readable_timeout( int fd, int sec,int usec) {
 	fd_set rset;
 	struct timeval tv;
 	FD_ZERO(&rset);	

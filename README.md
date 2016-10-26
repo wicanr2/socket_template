@@ -6,14 +6,15 @@ make clean
 
 # start server #
 open terminal
-./ipv6_server
+./ipv6/ipv6_server
 
 # test concurrent client #
 open terminal
-./test6.sh
+./ipv6/test6.sh
 
 # assembly debug
 - create assembler code:
 c++ -S -fverbose-asm -g -O2 test.cc -o test.s
+
 - create asm interlaced with source lines:
 as -alhnd test.s > test.lst
