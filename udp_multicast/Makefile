@@ -1,5 +1,7 @@
 all:
-	gcc m_udp_server.c -o m_udp_server
-	gcc m_udp_client.c -o m_udp_client
+	mkdir -p out
+	gcc m_udp_server.c -o out/m_udp_server
+	gcc m_udp_client.c -o out/m_udp_client
+
 clean:
-	rm m_udp_server m_udp_client
+	rm -rf out 

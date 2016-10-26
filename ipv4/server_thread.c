@@ -53,41 +53,40 @@ int set_socket_reusable(int fd)
 int main()
 {
     int sockfd;
-    //struct sockaddr_in dest;
-    struct sockaddr_in6 dest;
+    //server sockaddr_in saddr;
+    struct sockaddr_in saddr;
     //
-    char client_addr_ipv6[100];
-    char start[20] = "Server start.\n";
+    char client_addr_ip[100];
+    char interface_ip[64] = "127.0.0.1";
 
-    printf("%s", start);
+    fprintf(stdout,"Server Start");
 
-    sockfd = socket(AF_INET6, SOCK_STREAM, 0);
+    sockfd = socket(AF_INET, SOCK_STREAM, 0);
     set_socket_reusable(sockfd);
 
-    /* initialize structure dest */
-    bzero(&dest, sizeof(dest));
-    dest.sin6_flowinfo = 0;
-    dest.sin6_family = AF_INET6;
-    dest.sin6_port = htons(8889);
-    dest.sin6_addr = in6addr_any;
+    bzero(&saddr, sizeof(saddr));
+    saddr.sin_family = AF_INET;
+    saddr.sin_port = htons(17290);
+    //saddr.sin_addr.s_addr = htonl(INADDR_ANY);
+    inet_pton(AF_INET, interface_ip, &saddr.sin_addr);
 
-    bind(sockfd, (struct sockaddr*)&dest, sizeof(dest));
+    bind(sockfd, (struct sockaddr*)&saddr, sizeof(saddr));
 
     listen(sockfd, 20);
 
     while(1)
     {
         //int clientfd;
-        struct sockaddr_in6 client_addr;
+        struct sockaddr_in client_addr;
         int addrlen = sizeof(client_addr);
         int clientfd = accept(sockfd, (struct sockaddr *) &client_addr, &addrlen);
         pthread_t tid;
-        inet_ntop(AF_INET6, &(client_addr.sin6_addr), client_addr_ipv6, 100);
-        printf("Incoming connection from client having IPv6 address: %s\n", client_addr_ipv6);
+        inet_ntop(AF_INET, &(client_addr.sin_addr), client_addr_ip, 100);
+        fprintf(stdout,"Incoming connection from client having IPv6 address: %s\n", client_addr_ip);
 
         if( pthread_create( &tid , NULL ,  connection_handler , (void*) clientfd) < 0)
         {
-            perror("could not create thread");
+            fprintf(stderr,"could not create thread");
             return 1;
         }
 
@@ -102,7 +101,7 @@ void *connection_handler(void *clientfd) {
     char buffer[128];
     int num = 0, r = 0;
 
-    printf("sockFd: %d\n",client);
+    fprintf(stdout,"sockFd: %d\n",client);
 
     bzero(buffer, 128);
     do {
@@ -113,10 +112,10 @@ void *connection_handler(void *clientfd) {
         if ( r > 0 ) break;
     } while (1);
 
-    printf("echo message %s\n", buffer);
+    fprintf(stdout,"echo message %s\n", buffer);
     send(client, buffer, r, 0);
     close(client);
-    printf("close sockFd: %d\n",client);
+    fprintf(stdout,"close sockFd: %d\n",client);
     pthread_exit(0);
     return 0;
 }

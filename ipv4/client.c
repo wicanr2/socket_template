@@ -35,22 +35,21 @@ int main(int argc, char *argv[])
 {
     int sockfd = 0;
     int num = 0, r = 0;
-    struct sockaddr_in6 dest;
+    struct sockaddr_in dest;
     char message[128];
     char buffer[128];
-    char destIP[128] = "::1";
+    char destIP[128] = "127.0.0.1";
     memset(message, 0, sizeof(message));
     strcpy(message, argv[1]);
 
     /* create socket */
-    sockfd = socket(AF_INET6, SOCK_STREAM, 0);
+    sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
     /* initialize value in dest */
     bzero(&dest, sizeof(dest));
-    dest.sin6_flowinfo = 0;
-    dest.sin6_family = AF_INET6;
-    dest.sin6_port = htons(8889);
-    inet_pton(AF_INET6, destIP, &dest.sin6_addr);
+    dest.sin_family = AF_INET;
+    dest.sin_port = htons(17290);
+    inet_pton(AF_INET, destIP, &dest.sin_addr);
 
     while(1) {
         r=connect(sockfd, (struct sockaddr*)&dest, sizeof(dest));
